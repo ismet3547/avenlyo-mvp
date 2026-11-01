@@ -31,6 +31,7 @@
 | `server/validation.ts`      | Sunucu tarafı veri sınırları ve doğrulama                |
 | `server/index.ts`           | Ortam yükleme ve geliştirme/üretim sunucusu              |
 | `tests/integration.test.ts` | HTTP, veri, bağlam ve SDK sözleşmesi kontrolleri         |
+| `tests/startup.test.ts`     | Geliştirme sunucusunun açılması ve kararlı çalışması     |
 
 ## Sonraki sürüme uygun genişletmeler
 

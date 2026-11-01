@@ -17,7 +17,7 @@ Amaç: İşletme sahibinin yerel bir uygulamada işletmesini tanıtabilmesi, öz
 
 ## Doğrulama
 
-`npm test`, gerçek OpenAI çağrısı yapmayan üç kapsamlı testle şu sınırları kontrol eder:
+`npm test`, gerçek OpenAI çağrısı yapmayan dört kapsamlı testle şu sınırları kontrol eder:
 
 - HTTP istekleri → sunucu doğrulaması → SQLite kayıtları.
 - Anahtar yokken sohbetin engellenmesi.
@@ -31,6 +31,7 @@ Amaç: İşletme sahibinin yerel bir uygulamada işletmesini tanıtabilmesi, öz
 - Yeni veritabanı bağlantısıyla kayıtların korunması.
 - Anahtarın uygulama durumundan ve dışa aktarımdan çıkarılması.
 - Gerçek OpenAI SDK'sıyla SSE olaylarının okunması ve sağlayıcı hatalarının gizlenmesi.
+- Gerçek geliştirme komutuyla sunucunun açılması, HTTP yanıtı vermesi ve dosya değişmeden yeniden başlamaması.
 
 `npm run build`, tüm TypeScript dosyalarını kontrol eder ve üretim arayüzünü derler.
 

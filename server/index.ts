@@ -19,6 +19,9 @@ if (production) {
 } else {
   const { createServer } = await import("vite");
   const vite = await createServer({
+    // Bundled configs are temporary imports. Removing them triggers Node's
+    // module watcher and otherwise restarts this process indefinitely.
+    configLoader: "runner",
     server: { middlewareMode: true },
     appType: "spa",
   });
@@ -26,11 +29,14 @@ if (production) {
 }
 const port = Number(process.env.PORT || 3000),
   host = process.env.HOST || "127.0.0.1";
-const server = app.listen(port, host, () =>
+const server = app.listen(port, host, () => {
+  const address = server.address();
+  const listeningPort =
+    address && typeof address === "object" ? address.port : port;
   console.log(
-    `\n  Avenlyo hazır → http://${host === "0.0.0.0" ? "localhost" : host}:${port}\n`,
-  ),
-);
+    `\n  Avenlyo hazır → http://${host === "0.0.0.0" ? "localhost" : host}:${listeningPort}\n`,
+  );
+});
 function shutdown() {
   server.close(() => {
     store.close();

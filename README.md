@@ -61,6 +61,17 @@ npm start
 
 Bu mod geliştirme sunucusu yerine derlenmiş arayüzü sunar. Yine `http://localhost:3000` adresinden erişilir.
 
+### Geliştirme sunucusu sürekli yeniden başlıyorsa
+
+Dosya değiştirmediğiniz halde tekrar tekrar `Restarting 'server/index.ts'` görmeniz normal değildir. İlk sürümde Vite'ın geçici yapılandırma dosyası Node.js izleyicisini tetikliyordu; bu döngü giderildi. Güncel sürümü alın:
+
+```bash
+git pull --ff-only
+npm run dev
+```
+
+Terminali açık tutun ve tarayıcıdan `http://localhost:3000` adresini ziyaret edin. `Ctrl+C` sunucuyu durdurur. `ExperimentalWarning: SQLite is an experimental feature` mesajı, kullandığınız Node.js sürümünün SQLite desteğine ilişkin bir uyarıdır; tek başına uygulama hatası anlamına gelmez.
+
 ## Komutlar
 
 | Komut           | İşlev                                                            |
