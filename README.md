@@ -6,7 +6,7 @@
 
 ## Hızlı başlangıç
 
-Node.js **24 veya üzeri** ve npm gereklidir. Veritabanı için ayrıca bir servis kurmanız gerekmez.
+Önerilen ve `.nvmrc` ile seçilen sürüm **Node.js 26 LTS**'dir. Node.js 24 desteği de korunur; otomatik kontroller Windows ve Linux üzerinde her iki sürümde çalışır. npm dışında veritabanı için ayrıca bir servis kurmanız gerekmez.
 
 ```bash
 git clone https://github.com/ismet3547/avenlyo-mvp.git

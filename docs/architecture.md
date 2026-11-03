@@ -4,7 +4,7 @@
 
 **Tek süreç, tek port.** React/Vite arayüzü ve Express API geliştirmede aynı HTTP sunucusunu kullanır. Üretim modunda aynı sunucu `dist/` dosyalarını sunar. Ayrı servis, Docker veya uzak veritabanı gerekmez.
 
-**Yerel SQLite.** Node.js 24'ün `node:sqlite` modülü ek bir native veritabanı paketi gerektirmeden kalıcılık sağlar. `Store`, veri erişimini HTTP katmanından ayırır. Mesajlar konuşmaya dış anahtarla bağlıdır; konuşma silindiğinde mesajları da silinir. Kaynak silindiğinde ajan atamaları temizlenir. Başlangıç ajanları yalnızca ilk kurulumda eklenir.
+**Yerel SQLite.** Node.js'in `node:sqlite` modülü ek bir native veritabanı paketi gerektirmeden kalıcılık sağlar. Varsayılan çalışma sürümü Node.js 26 LTS'dir; Node.js 24 alt sınırı korunur ve her iki sürüm Windows / Linux CI matrisinde kontrol edilir. `Store`, veri erişimini HTTP katmanından ayırır. Mesajlar konuşmaya dış anahtarla bağlıdır; konuşma silindiğinde mesajları da silinir. Kaynak silindiğinde ajan atamaları temizlenir. Başlangıç ajanları yalnızca ilk kurulumda eklenir.
 
 **Sunucuda OpenAI.** Anahtar hiçbir React bileşenine verilmez. `Config`, ortam anahtarını veya özel yerel ayar dosyasını okur. Dışa aktarma yalnızca izin verilen veri alanlarını içerir. Model istemcisi, sağlayıcı hatalarını kullanıcıya uygun ve anahtar içermeyen mesajlara çevirir.
 
