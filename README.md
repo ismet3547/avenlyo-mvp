@@ -105,6 +105,6 @@ Kaynak başına 30.000 karakter, dosya başına 100 KB sınırı vardır. PDF/Wo
 
 ## Mimari ve geliştirme planı
 
-[Mimari notları](docs/architecture.md) · [MVP planı ve doğrulama](docs/plan.md)
+[Mimari notları](docs/architecture.md) · [MVP planı ve doğrulama](docs/plan.md) · [Arayüz yenilemesi ve okunabilirlik](docs/ui-redesign.md)
 
 OpenAI entegrasyonu [resmî Responses API akış belgesindeki](https://developers.openai.com/api/docs/guides/streaming-responses) sözleşmeyi kullanır.

@@ -2,7 +2,13 @@ import { useState, type FormEvent } from "react";
 import { Check, FileText, LoaderCircle, Upload } from "lucide-react";
 import type { Agent, Source } from "../../shared";
 import { api, json } from "../api";
-import { AgentIcon, Modal, agentIcons } from "./ui";
+import {
+  AgentIcon,
+  Modal,
+  agentIcons,
+  agentIconLabels,
+  agentColors,
+} from "./ui";
 
 type FormProps = {
   onClose: () => void;
@@ -63,7 +69,7 @@ export function AgentForm({
                   type="button"
                   key={icon}
                   className={`icon-choice ${form.icon === icon ? "selected" : ""}`}
-                  aria-label={`${icon} simgesi`}
+                  aria-label={`${agentIconLabels[icon as keyof typeof agentIcons]} simgesi`}
                   aria-pressed={form.icon === icon}
                   onClick={() => setForm({ ...form, icon })}
                 >
@@ -73,12 +79,13 @@ export function AgentForm({
             </div>
           </div>
           <div className="color-options" aria-label="Ajan rengi">
-            {["purple", "orange", "green", "blue", "pink"].map((color) => (
+            {Object.entries(agentColors).map(([color, label]) => (
               <button
                 type="button"
                 key={color}
                 className={`color-dot ${color}`}
-                aria-label={`${color} renk`}
+                aria-label={`${label} renk`}
+                title={label}
                 aria-pressed={form.color === color}
                 onClick={() => setForm({ ...form, color })}
               >

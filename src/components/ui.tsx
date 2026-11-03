@@ -18,6 +18,22 @@ export const agentIcons = {
   sparkles: Sparkles,
   briefcase: BriefcaseBusiness,
 };
+export const agentIconLabels: Record<keyof typeof agentIcons, string> = {
+  headphones: "Müşteri desteği",
+  pen: "İçerik",
+  trend: "Satış",
+  bot: "Asistan",
+  sparkles: "Yaratıcılık",
+  briefcase: "İşletme",
+};
+// Keep saved IDs compatible while replacing the previous pastel palette.
+export const agentColors = {
+  purple: "Mavi",
+  blue: "Lacivert",
+  green: "Yeşil",
+  orange: "Kehribar",
+  pink: "Koyu gri",
+};
 export function AgentIcon({
   icon = "bot",
   color = "purple",

@@ -3,6 +3,7 @@ import {
   Suspense,
   useCallback,
   useEffect,
+  useRef,
   useState,
   type FormEvent,
 } from "react";
@@ -84,6 +85,8 @@ export default function App() {
     [query, setQuery] = useState(""),
     [filter, setFilter] = useState("all"),
     [help, setHelp] = useState(false);
+  const sidebarRef = useRef<HTMLElement>(null);
+  const menuToggleRef = useRef<HTMLButtonElement>(null);
   const refresh = useCallback(async () => {
     const next = await api<AppState>("/state");
     setState(next);
@@ -97,6 +100,41 @@ export default function App() {
     const timer = setTimeout(() => setToast(""), 4000);
     return () => clearTimeout(timer);
   }, [toast]);
+  useEffect(() => {
+    if (!mobile) return;
+    const sidebar = sidebarRef.current;
+    if (!sidebar) return;
+    const controls = () =>
+      Array.from(
+        sidebar.querySelectorAll<HTMLElement>("a[href], button:not(:disabled)"),
+      ).filter((element) => element.getClientRects().length > 0);
+    controls()[0]?.focus();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    function keyboard(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setMobile(false);
+      }
+      if (event.key !== "Tab") return;
+      const items = controls(),
+        first = items[0],
+        last = items.at(-1);
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    }
+    document.addEventListener("keydown", keyboard);
+    return () => {
+      document.removeEventListener("keydown", keyboard);
+      document.body.style.overflow = previousOverflow;
+      menuToggleRef.current?.focus();
+    };
+  }, [mobile]);
   function go(next: Page) {
     setPage(next);
     setMobile(false);
@@ -180,6 +218,9 @@ export default function App() {
   );
   return (
     <div className="app-shell">
+      <a href="#workspace-main" className="skip-link">
+        İçeriğe geç
+      </a>
       {mobile && (
         <button
           className="sidebar-overlay"
@@ -187,7 +228,14 @@ export default function App() {
           onClick={() => setMobile(false)}
         />
       )}
-      <aside className={`sidebar ${mobile ? "open" : ""}`}>
+      <aside
+        ref={sidebarRef}
+        id="workspace-navigation"
+        className={`sidebar ${mobile ? "open" : ""}`}
+        aria-label="Çalışma alanı menüsü"
+        role={mobile ? "dialog" : undefined}
+        aria-modal={mobile || undefined}
+      >
         <a
           href="#"
           className="brand"
@@ -264,12 +312,15 @@ export default function App() {
           </div>
         </div>
       </aside>
-      <div className="main-shell">
+      <div className="main-shell" inert={mobile}>
         <header className="topbar">
           <div className="breadcrumb">
             <button
+              ref={menuToggleRef}
               className="icon-button mobile-menu"
               aria-label="Menüyü aç"
+              aria-expanded={mobile}
+              aria-controls="workspace-navigation"
               onClick={() => setMobile(true)}
             >
               <Menu size={22} />
@@ -287,13 +338,18 @@ export default function App() {
             <button
               className="top-avatar"
               title="İşletme profili"
+              aria-label="İşletme profili"
               onClick={() => go("business")}
             >
               {state.business.name.slice(0, 1).toLocaleUpperCase("tr") || "İ"}
             </button>
           </div>
         </header>
-        <main className={`main-content ${page === "chat" ? "chat-main" : ""}`}>
+        <main
+          id="workspace-main"
+          tabIndex={-1}
+          className={`main-content ${page === "chat" ? "chat-main" : ""}`}
+        >
           {page === "overview" && (
             <>
               <div className="page-heading">
@@ -925,15 +981,20 @@ function AgentCard({
   onDelete: () => void;
 }) {
   const [menu, setMenu] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   return (
     <article className="agent-card">
       <div className="agent-card-top">
         <AgentIcon icon={agent.icon} color={agent.color} />
         <div className="card-menu">
           <button
+            ref={triggerRef}
             className="icon-button"
             aria-label={`${agent.name} seçenekleri`}
             aria-expanded={menu}
+            onKeyDown={(event) => {
+              if (event.key === "Escape") setMenu(false);
+            }}
             onClick={() => setMenu(!menu)}
           >
             <Ellipsis size={20} />
@@ -945,7 +1006,15 @@ function AgentCard({
                 aria-label="Seçenekleri kapat"
                 onClick={() => setMenu(false)}
               />
-              <div className="dropdown">
+              <div
+                className="dropdown"
+                onKeyDown={(event) => {
+                  if (event.key === "Escape") {
+                    setMenu(false);
+                    triggerRef.current?.focus();
+                  }
+                }}
+              >
                 <button
                   onClick={() => {
                     setMenu(false);

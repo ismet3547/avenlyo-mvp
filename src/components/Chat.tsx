@@ -302,6 +302,38 @@ export default function Chat({
         </div>
       </aside>
       <section className="chat-panel">
+        <div className="mobile-chat-history">
+          <label className="sr-only" htmlFor="mobile-conversation">
+            Sohbet geçmişi
+          </label>
+          <select
+            id="mobile-conversation"
+            value={conversationId || ""}
+            disabled={busy || loading}
+            onChange={(event) => {
+              const conversation = conversations.find(
+                (item) => item.id === event.target.value,
+              );
+              if (conversation) void open(conversation);
+              else startNew();
+            }}
+          >
+            <option value="">Yeni sohbet</option>
+            {conversations.map((conversation) => (
+              <option key={conversation.id} value={conversation.id}>
+                {conversation.title}
+              </option>
+            ))}
+          </select>
+          <button
+            className="button secondary"
+            disabled={busy || loading}
+            onClick={() => startNew()}
+          >
+            <Plus size={18} />
+            Yeni
+          </button>
+        </div>
         <header className="chat-header">
           <div className="chat-agent">
             <AgentIcon icon={agent?.icon} color={agent?.color} small />
