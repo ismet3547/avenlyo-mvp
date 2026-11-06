@@ -39,9 +39,21 @@ export const starterAgents = [
   },
 ];
 
+export function transaction<T>(db: DatabaseSync, run: () => T): T {
+  db.exec("BEGIN IMMEDIATE");
+  try {
+    const result = run();
+    db.exec("COMMIT");
+    return result;
+  } catch (error) {
+    db.exec("ROLLBACK");
+    throw error;
+  }
+}
+
 export class Store {
   db: DatabaseSync;
-  constructor(path: string) {
+  constructor(path: string, seedLocalWorkspace = true) {
     mkdirSync(dirname(path), { recursive: true, mode: 0o700 });
     this.db = new DatabaseSync(path);
     this.db
@@ -50,7 +62,7 @@ export class Store {
       CREATE TABLE IF NOT EXISTS conversations (id TEXT PRIMARY KEY, agent_id TEXT NOT NULL, title TEXT NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS messages (id TEXT PRIMARY KEY, conversation_id TEXT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE, role TEXT NOT NULL CHECK(role IN ('user','assistant')), content TEXT NOT NULL, created_at TEXT NOT NULL);
       CREATE INDEX IF NOT EXISTS messages_conversation ON messages(conversation_id,created_at);`);
-    if (!this.get("meta", "initialized")) {
+    if (seedLocalWorkspace && !this.get("meta", "initialized")) {
       this.db.exec("BEGIN");
       try {
         this.set("business", "profile", {
@@ -128,7 +140,11 @@ export class Store {
       .all() as unknown as Conversation[];
   }
   conversation(id: string) {
-    return this.conversations().find((c) => c.id === id);
+    return this.db
+      .prepare(
+        "SELECT id, agent_id AS agentId, title, created_at AS createdAt, updated_at AS updatedAt FROM conversations WHERE id = ?",
+      )
+      .get(id) as unknown as Conversation | undefined;
   }
   createConversation(agentId: string, title: string) {
     const id = randomUUID(),
@@ -144,6 +160,15 @@ export class Store {
         "SELECT id, conversation_id AS conversationId, role, content, created_at AS createdAt FROM messages WHERE conversation_id = ? ORDER BY rowid",
       )
       .all(id) as unknown as Message[];
+  }
+  recentMessages(id: string, limit: number) {
+    return (
+      this.db
+        .prepare(
+          "SELECT id, conversation_id AS conversationId, role, content, created_at AS createdAt FROM messages WHERE conversation_id = ? ORDER BY rowid DESC LIMIT ?",
+        )
+        .all(id, limit) as unknown as Message[]
+    ).reverse();
   }
   addMessage(conversationId: string, role: Message["role"], content: string) {
     const id = randomUUID(),

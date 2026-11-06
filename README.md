@@ -1,10 +1,39 @@
 # Avenlyo
 
-İşletmenizi tanıyan yapay zekâ ajanlarını oluşturabileceğiniz, bilgisayarınızda çalışan Türkçe bir çalışma alanı.
+İşletmenizin bilgileriyle çalışan Türkçe müşteri destek ajanları oluşturun.
 
 **React + TypeScript · Node.js + Express · SQLite · OpenAI Responses API**
 
-## Hızlı başlangıç
+## A1 · Kapalı test sürümü
+
+Node.js 24 veya 26 ile proje klasöründe çalıştırın.
+
+```bash
+npm ci
+npm run dev
+```
+
+Tarayıcıda **http://127.0.0.1:3000** adresini açın.
+
+1. **Demoyu dene** ile örnek müşteri sohbetini açabilir veya **Ajanını oluştur** ile bir test hesabı açabilirsiniz. Şifre kurtarma kodunu güvenli bir yere kaydedin.
+2. İşletme ve ajan bilgilerini girin. Bir **Soru-cevap** kaynağı ekleyip ajan için onaylayın.
+3. **Test** adımında kaydettiğiniz soruyu sorun. Kaynaklı bir yanıt aldığınızda **Yayın** adımına geçin.
+4. **Ajanı yayınla** düğmesi yerel bir sohbet bağlantısı ve iframe kodu oluşturur. Bağlantıyı ayrı bir tarayıcı sekmesinde açın. Bilinen bir soru sorun veya **Ekibe ulaş** üzerinden örnek bir talep bırakın.
+5. Panelde **Gelen kutusu** adımından sohbeti açın ve talebi çözüldü olarak işaretleyin.
+
+- Sunucu yalnızca loopback adresinde dinler. Sohbet bağlantısı ve gömme kodu kapalı test sunucusuna aittir.
+- A1, her hesap için ayrı SQLite dosyası kullanır. Varsayılan konum `data/a1/` altında. Oturum ve kurtarma kodları veritabanında özetleriyle saklanır.
+- Yayındaki ajan son onaylı kaynak kopyasıyla çalışır. Taslak değişiklikleri test edilip yeniden yayınlanınca aynı sohbet adresine yansır.
+- Demo ve birebir eşleşen soru-cevaplar API anahtarı olmadan çalışır. Diğer sorulara onaylı metinlerden yanıt verebilmek için test sunucusunda `OPENAI_API_KEY` tanımlayın. Model yalnızca ilgili parçalar arasından seçim yapar. Müşteri talebinin iletişim e-postası işletmenin gelen kutusunda saklanır.
+- Şifre sıfırlamak için **Şifremi unuttum** ekranına e-posta adresinizi ve kurtarma kodunuzu girin. İşlem önceki oturumları ve kodu geçersiz kılar.
+
+Test ve derleme için `npm test` ve `npm run build` komutlarını çalıştırın. Derlenmiş kapalı test sürümü `npm start` ile açılır.
+
+## Önceki tek kullanıcılı çalışma alanı
+
+`npm run dev:local` ile önceki yerel çalışma alanını ve mevcut `data/avenlyo.sqlite` verilerinizi açabilirsiniz. Aşağıdaki bölümler bu modu açıklar.
+
+### Hızlı başlangıç
 
 Önerilen ve `.nvmrc` ile seçilen sürüm **Node.js 26 LTS**'dir. Node.js 24 desteği de korunur; otomatik kontroller Windows ve Linux üzerinde her iki sürümde çalışır. npm dışında veritabanı için ayrıca bir servis kurmanız gerekmez.
 
@@ -12,7 +41,7 @@
 git clone https://github.com/ismet3547/avenlyo-mvp.git
 cd avenlyo-mvp
 npm ci
-npm run dev
+npm run dev:local
 ```
 
 Tarayıcıda **http://localhost:3000** adresini açın.
@@ -56,7 +85,7 @@ HOST=127.0.0.1
 
 ```bash
 npm run build
-npm start
+npm run start:local
 ```
 
 Bu mod geliştirme sunucusu yerine derlenmiş arayüzü sunar. Yine `http://localhost:3000` adresinden erişilir.
@@ -67,20 +96,20 @@ Dosya değiştirmediğiniz halde tekrar tekrar `Restarting 'server/index.ts'` g�
 
 ```bash
 git pull --ff-only
-npm run dev
+npm run dev:local
 ```
 
 Terminali açık tutun ve tarayıcıdan `http://localhost:3000` adresini ziyaret edin. `Ctrl+C` sunucuyu durdurur. `ExperimentalWarning: SQLite is an experimental feature` mesajı, kullandığınız Node.js sürümünün SQLite desteğine ilişkin bir uyarıdır; tek başına uygulama hatası anlamına gelmez.
 
 ## Komutlar
 
-| Komut           | İşlev                                                            |
-| --------------- | ---------------------------------------------------------------- |
-| `npm run dev`   | Tek portta API ve Vite geliştirme sunucusu                       |
-| `npm run build` | TypeScript kontrolü ve arayüzün üretim derlemesi                 |
-| `npm start`     | Derlenmiş arayüzle yerel sunucu                                  |
-| `npm run check` | TypeScript kontrolü                                              |
-| `npm test`      | API / SQLite entegrasyonu ve OpenAI SDK akış sözleşmesi testleri |
+| Komut                 | İşlev                                                  |
+| --------------------- | ------------------------------------------------------ |
+| `npm run dev:local`   | Tek portta API ve Vite geliştirme sunucusu             |
+| `npm run build`       | TypeScript kontrolü ve arayüzün üretim derlemesi       |
+| `npm run start:local` | Derlenmiş arayüzle yerel sunucu                        |
+| `npm run check`       | TypeScript kontrolü                                    |
+| `npm test`            | A1 hesap izolasyonu, yerel API ve OpenAI akış testleri |
 
 Testler geçici SQLite veritabanı ve yerel model yanıtları kullanır. Gerçek OpenAI çağrısı veya API harcaması yapmaz.
 

@@ -8,8 +8,10 @@
   },
   "scripts": {
     "dev": "node --watch --import tsx server/index.ts",
+    "dev:local": "node --watch --import tsx server/index.ts --local-workspace",
     "build": "tsc --noEmit && vite build",
     "start": "node --import tsx server/index.ts --production",
+    "start:local": "node --import tsx server/index.ts --production --local-workspace",
     "test": "node --import tsx --test tests/*.test.ts",
     "check": "tsc --noEmit"
   },
@@ -32,6 +34,6 @@
     "prettier": "3.6.2",
     "tsx": "4.20.6",
     "typescript": "5.9.3",
-    "vite": "7.2.2"
+    "vite": "7.3.7"
   }
 }
